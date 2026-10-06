@@ -5,14 +5,14 @@
 //! ## Getting Started
 //!
 //! ```rust
-//! use weathercloud_api::prelude::*;
+//! use weathercloud::prelude::*;
 //!
 //! #[tokio::main]
 //! async fn main() {
 //!     let config = ClientConfig {
 //!         ..Default::default()
 //!     };
-//!     let client = ApiClient::new(config).expect("Failed to build client");
+//!     let client = WeathercloudClient::new(config).expect("Failed to build client");
 //!     client
 //!         .auth
 //!         .login(

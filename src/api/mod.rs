@@ -12,7 +12,7 @@ pub mod resources;
 pub mod types;
 
 pub use resources::{
-    ApiClient, AuthClient, DeviceHistoryClient, DeviceLiveClient, ForecastClient, MapClient,
-    MetarClient, StationsClient,
+    AuthClient, DeviceHistoryClient, DeviceLiveClient, ForecastClient, MapClient, MetarClient,
+    StationsClient, WeathercloudClient,
 };
 pub use types::*;

@@ -2,7 +2,16 @@
   "cliVersion": "5.140.0",
   "generatorName": "fernapi/fern-rust-sdk",
   "generatorVersion": "0.53.0",
-  "originGitCommit": "90666a155bb6d9ae652eb41b6113ca5b4c405160",
+  "generatorConfig": {
+    "clientClassName": "WeathercloudClient",
+    "crateName": "weathercloud",
+    "crateVersion": "1.0.0",
+    "packageDescription": "Rust SDK for the Weathercloud API",
+    "packageLicense": "MIT",
+    "packageRepository": "https://github.com/MauroDruwel/weathercloud-rust",
+    "packageDocumentation": "https://docs.rs/weathercloud"
+  },
+  "originGitCommit": "6c7686622cba6856fd41270407fa63fad69793b0",
   "originGitCommitIsDirty": true,
   "invokedBy": "manual"
 }

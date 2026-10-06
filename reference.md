@@ -28,14 +28,14 @@ This endpoint expects form urlencoded data and returns a `302 Found` redirect on
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client
         .auth
         .login(
@@ -119,14 +119,14 @@ This is the primary endpoint for a Home Assistant sensor integration.
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client
         .device_live
         .get_values(&"5726468552".to_string(), None)
@@ -186,14 +186,14 @@ Each value is a `[unix_timestamp, value]` tuple.
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client
         .device_live
         .get_stats(
@@ -257,14 +257,14 @@ Station name, location, elevation, equipment info.
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client
         .device_live
         .get_info(&"5726468552".to_string(), None)
@@ -323,14 +323,14 @@ Wind direction distribution data for the wind rose chart.
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client
         .device_live
         .get_wind_rose(
@@ -396,14 +396,14 @@ Returns seconds since last update and device online status.
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client
         .device_live
         .get_update_status(
@@ -469,14 +469,14 @@ Returns observer name, follower count, and device brand/model.
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client
         .device_live
         .get_owner_profile(
@@ -560,14 +560,14 @@ Returns hourly aggregated history for a given variable and period.
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client
         .device_history
         .get_evolution(
@@ -636,14 +636,14 @@ async fn main() {
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client
         .forecast
         .get_daily(
@@ -710,14 +710,14 @@ Returns stations visible on the map for a given location bounding box.
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client
         .map
         .get_devices(
@@ -775,14 +775,14 @@ async fn main() {
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client
         .map
         .get_background_devices(
@@ -832,14 +832,14 @@ async fn main() {
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client
         .map
         .get_metars(
@@ -889,14 +889,14 @@ Values are scaled integers — divide by 10 (e.g. `temp: 281` = 28.1°C).
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client.stations.get_nearby(1.1, 1.1, 1, None).await;
 }
 ```
@@ -954,14 +954,14 @@ async fn main() {
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client
         .stations
         .get_popular(
@@ -1018,14 +1018,14 @@ async fn main() {
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client.stations.get_newest(&"BE".to_string(), None).await;
 }
 ```
@@ -1067,14 +1067,14 @@ async fn main() {
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client
         .stations
         .get_most_followed(&"BE".to_string(), None)
@@ -1119,14 +1119,14 @@ async fn main() {
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client.stations.get_last_views(None).await;
 }
 ```
@@ -1153,14 +1153,14 @@ async fn main() {
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client.stations.get_own(None).await;
 }
 ```
@@ -1212,14 +1212,14 @@ Strip everything from ` - Weathercloud` onward to get the clean station name.
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client
         .stations
         .get_station_page(&"deviceId".to_string(), None)
@@ -1292,14 +1292,14 @@ METAR station IDs are **ICAO codes** (4 letters), e.g. `EBBR` for Brussels Airpo
 <dd>
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client.metar.get_values(&"EBBR".to_string(), None).await;
 }
 ```

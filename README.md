@@ -1,7 +1,7 @@
 # Weathercloud Rust Library
 
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=Weathercloud%2FRust)
-[![crates.io shield](https://img.shields.io/crates/v/weathercloud_api)](https://crates.io/crates/weathercloud_api)
+[![crates.io shield](https://img.shields.io/crates/v/weathercloud)](https://crates.io/crates/weathercloud)
 
 The Weathercloud Rust library provides convenient access to the Weathercloud APIs from Rust.
 
@@ -28,13 +28,13 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-weathercloud_api = "0.1.0"
+weathercloud = "1.0.0"
 ```
 
 Or install via cargo:
 
 ```sh
-cargo add weathercloud_api
+cargo add weathercloud
 ```
 
 ## Reference
@@ -46,14 +46,14 @@ A full reference for this library is available [here](./reference.md).
 Instantiate and use the client with the following:
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
     let config = ClientConfig {
         ..Default::default()
     };
-    let client = ApiClient::new(config).expect("Failed to build client");
+    let client = WeathercloudClient::new(config).expect("Failed to build client");
     client
         .auth
         .login(
@@ -73,7 +73,7 @@ async fn main() {
 This SDK allows you to configure different environments for API requests.
 
 ```rust
-use weathercloud_api::prelude::{*};
+use weathercloud::prelude::{*};
 
 let config = ClientConfig {
     base_url: Environment::Default.url().to_string(),
@@ -105,7 +105,7 @@ match client.auth.login(None)?.await {
 The SDK exports all request types as Rust structs. Simply import them from the crate to access them:
 
 ```rust
-use weathercloud_api::prelude::{*};
+use weathercloud::prelude::{*};
 
 let request = LoginAuthRequest {
     ...
@@ -206,7 +206,7 @@ transport — custom root certificates, client certificates, proxies or connecti
 client is used as-is; authentication, custom headers and retries are still applied by the SDK.
 
 ```rust
-use weathercloud_api::prelude::*;
+use weathercloud::prelude::*;
 
 let certificate = reqwest::Certificate::from_pem(&std::fs::read("ca.pem")?)?;
 let reqwest_client = reqwest::Client::builder()
@@ -217,7 +217,7 @@ let config = ClientConfig {
     reqwest_client: Some(reqwest_client),
     ..Default::default()
 };
-let client = ApiClient::new(config).expect("Failed to build client");
+let client = WeathercloudClient::new(config).expect("Failed to build client");
 ```
 
 ## Contributing

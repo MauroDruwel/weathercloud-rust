@@ -19,7 +19,7 @@ pub mod forecast;
 pub mod map;
 pub mod metar;
 pub mod stations;
-pub struct ApiClient {
+pub struct WeathercloudClient {
     pub config: ClientConfig,
     pub auth: AuthClient,
     pub device_live: DeviceLiveClient,
@@ -30,7 +30,7 @@ pub struct ApiClient {
     pub metar: MetarClient,
 }
 
-impl ApiClient {
+impl WeathercloudClient {
     pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         Ok(Self {
             config: config.clone(),

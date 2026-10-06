@@ -28,14 +28,14 @@ impl StationsClient {
     /// # Examples
     ///
     /// ```no_run
-    /// use weathercloud_api::prelude::*;
+    /// use weathercloud::prelude::*;
     ///
     /// #[tokio::main]
     /// async fn main() {
     ///     let config = ClientConfig {
     ///         ..Default::default()
     ///     };
-    ///     let client = ApiClient::new(config).expect("Failed to build client");
+    ///     let client = WeathercloudClient::new(config).expect("Failed to build client");
     ///     client.stations.get_nearby(1.1, 1.1, 1, None).await;
     /// }
     /// ```
@@ -70,14 +70,14 @@ impl StationsClient {
     /// # Examples
     ///
     /// ```no_run
-    /// use weathercloud_api::prelude::*;
+    /// use weathercloud::prelude::*;
     ///
     /// #[tokio::main]
     /// async fn main() {
     ///     let config = ClientConfig {
     ///         ..Default::default()
     ///     };
-    ///     let client = ApiClient::new(config).expect("Failed to build client");
+    ///     let client = WeathercloudClient::new(config).expect("Failed to build client");
     ///     client
     ///         .stations
     ///         .get_popular(
@@ -115,14 +115,14 @@ impl StationsClient {
     /// # Examples
     ///
     /// ```no_run
-    /// use weathercloud_api::prelude::*;
+    /// use weathercloud::prelude::*;
     ///
     /// #[tokio::main]
     /// async fn main() {
     ///     let config = ClientConfig {
     ///         ..Default::default()
     ///     };
-    ///     let client = ApiClient::new(config).expect("Failed to build client");
+    ///     let client = WeathercloudClient::new(config).expect("Failed to build client");
     ///     client.stations.get_newest(&"BE".to_string(), None).await;
     /// }
     /// ```
@@ -152,14 +152,14 @@ impl StationsClient {
     /// # Examples
     ///
     /// ```no_run
-    /// use weathercloud_api::prelude::*;
+    /// use weathercloud::prelude::*;
     ///
     /// #[tokio::main]
     /// async fn main() {
     ///     let config = ClientConfig {
     ///         ..Default::default()
     ///     };
-    ///     let client = ApiClient::new(config).expect("Failed to build client");
+    ///     let client = WeathercloudClient::new(config).expect("Failed to build client");
     ///     client
     ///         .stations
     ///         .get_most_followed(&"BE".to_string(), None)
@@ -192,14 +192,14 @@ impl StationsClient {
     /// # Examples
     ///
     /// ```no_run
-    /// use weathercloud_api::prelude::*;
+    /// use weathercloud::prelude::*;
     ///
     /// #[tokio::main]
     /// async fn main() {
     ///     let config = ClientConfig {
     ///         ..Default::default()
     ///     };
-    ///     let client = ApiClient::new(config).expect("Failed to build client");
+    ///     let client = WeathercloudClient::new(config).expect("Failed to build client");
     ///     client.stations.get_last_views(None).await;
     /// }
     /// ```
@@ -222,14 +222,14 @@ impl StationsClient {
     /// # Examples
     ///
     /// ```no_run
-    /// use weathercloud_api::prelude::*;
+    /// use weathercloud::prelude::*;
     ///
     /// #[tokio::main]
     /// async fn main() {
     ///     let config = ClientConfig {
     ///         ..Default::default()
     ///     };
-    ///     let client = ApiClient::new(config).expect("Failed to build client");
+    ///     let client = WeathercloudClient::new(config).expect("Failed to build client");
     ///     client.stations.get_own(None).await;
     /// }
     /// ```
@@ -273,14 +273,14 @@ impl StationsClient {
     /// # Examples
     ///
     /// ```no_run
-    /// use weathercloud_api::prelude::*;
+    /// use weathercloud::prelude::*;
     ///
     /// #[tokio::main]
     /// async fn main() {
     ///     let config = ClientConfig {
     ///         ..Default::default()
     ///     };
-    ///     let client = ApiClient::new(config).expect("Failed to build client");
+    ///     let client = WeathercloudClient::new(config).expect("Failed to build client");
     ///     client
     ///         .stations
     ///         .get_station_page(&"deviceId".to_string(), None)

@@ -27,14 +27,14 @@ impl DeviceLiveClient {
     /// # Examples
     ///
     /// ```no_run
-    /// use weathercloud_api::prelude::*;
+    /// use weathercloud::prelude::*;
     ///
     /// #[tokio::main]
     /// async fn main() {
     ///     let config = ClientConfig {
     ///         ..Default::default()
     ///     };
-    ///     let client = ApiClient::new(config).expect("Failed to build client");
+    ///     let client = WeathercloudClient::new(config).expect("Failed to build client");
     ///     client
     ///         .device_live
     ///         .get_values(&"5726468552".to_string(), None)
@@ -78,14 +78,14 @@ impl DeviceLiveClient {
     /// # Examples
     ///
     /// ```no_run
-    /// use weathercloud_api::prelude::*;
+    /// use weathercloud::prelude::*;
     ///
     /// #[tokio::main]
     /// async fn main() {
     ///     let config = ClientConfig {
     ///         ..Default::default()
     ///     };
-    ///     let client = ApiClient::new(config).expect("Failed to build client");
+    ///     let client = WeathercloudClient::new(config).expect("Failed to build client");
     ///     client
     ///         .device_live
     ///         .get_stats(
@@ -135,14 +135,14 @@ impl DeviceLiveClient {
     /// # Examples
     ///
     /// ```no_run
-    /// use weathercloud_api::prelude::*;
+    /// use weathercloud::prelude::*;
     ///
     /// #[tokio::main]
     /// async fn main() {
     ///     let config = ClientConfig {
     ///         ..Default::default()
     ///     };
-    ///     let client = ApiClient::new(config).expect("Failed to build client");
+    ///     let client = WeathercloudClient::new(config).expect("Failed to build client");
     ///     client
     ///         .device_live
     ///         .get_info(&"5726468552".to_string(), None)
@@ -185,14 +185,14 @@ impl DeviceLiveClient {
     /// # Examples
     ///
     /// ```no_run
-    /// use weathercloud_api::prelude::*;
+    /// use weathercloud::prelude::*;
     ///
     /// #[tokio::main]
     /// async fn main() {
     ///     let config = ClientConfig {
     ///         ..Default::default()
     ///     };
-    ///     let client = ApiClient::new(config).expect("Failed to build client");
+    ///     let client = WeathercloudClient::new(config).expect("Failed to build client");
     ///     client
     ///         .device_live
     ///         .get_wind_rose(
@@ -244,14 +244,14 @@ impl DeviceLiveClient {
     /// # Examples
     ///
     /// ```no_run
-    /// use weathercloud_api::prelude::*;
+    /// use weathercloud::prelude::*;
     ///
     /// #[tokio::main]
     /// async fn main() {
     ///     let config = ClientConfig {
     ///         ..Default::default()
     ///     };
-    ///     let client = ApiClient::new(config).expect("Failed to build client");
+    ///     let client = WeathercloudClient::new(config).expect("Failed to build client");
     ///     client
     ///         .device_live
     ///         .get_update_status(
@@ -301,14 +301,14 @@ impl DeviceLiveClient {
     /// # Examples
     ///
     /// ```no_run
-    /// use weathercloud_api::prelude::*;
+    /// use weathercloud::prelude::*;
     ///
     /// #[tokio::main]
     /// async fn main() {
     ///     let config = ClientConfig {
     ///         ..Default::default()
     ///     };
-    ///     let client = ApiClient::new(config).expect("Failed to build client");
+    ///     let client = WeathercloudClient::new(config).expect("Failed to build client");
     ///     client
     ///         .device_live
     ///         .get_owner_profile(
