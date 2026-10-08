@@ -1,231 +1,244 @@
-# Weathercloud Rust Library
+# Weathercloud Rust SDK
 
-[![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=Weathercloud%2FRust)
-[![crates.io shield](https://img.shields.io/crates/v/weathercloud)](https://crates.io/crates/weathercloud)
+[![crates.io](https://img.shields.io/crates/v/weathercloud.svg)](https://crates.io/crates/weathercloud)
+[![docs.rs](https://docs.rs/weathercloud/badge.svg)](https://docs.rs/weathercloud)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Fern](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com)
 
-The Weathercloud Rust library provides convenient access to the Weathercloud APIs from Rust.
+Asynchronous, strongly-typed Rust SDK for [Weathercloud](https://weathercloud.net) — query real-time weather station sensor readings, METAR airport observations, sensor statistics, and historical trends without requiring authentication or CSRF tokens.
+
+Powered by `tokio`, `reqwest`, and `serde`.
+
+---
 
 ## Table of Contents
 
 - [Installation](#installation)
-- [Reference](#reference)
-- [Usage](#usage)
-- [Environments](#environments)
-- [Errors](#errors)
-- [Request Types](#request-types)
-- [Advanced](#advanced)
-  - [Retries](#retries)
-  - [Timeouts](#timeouts)
-  - [Additional Headers](#additional-headers)
-  - [Additional Query String Parameters](#additional-query-string-parameters)
-  - [Additional Body Properties](#additional-body-properties)
-  - [Custom Client](#custom-client)
-- [Contributing](#contributing)
+- [Quickstart](#quickstart)
+- [Live Weather Station Readings](#live-weather-station-readings)
+- [Sensor Variables Reference](#sensor-variables-reference)
+- [Station Profile & Metadata](#station-profile--metadata)
+- [Map & Station Discovery](#map--station-discovery)
+- [METAR Airport Observations](#metar-airport-observations)
+- [Error Handling](#error-handling)
+- [Full Reference](#full-reference)
+
+---
 
 ## Installation
 
-Add this to your `Cargo.toml`:
+Add `weathercloud` and `tokio` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
 weathercloud = "1.0.0"
+tokio = { version = "1", features = ["full"] }
 ```
 
-Or install via cargo:
+Or using `cargo add`:
 
-```sh
+```bash
 cargo add weathercloud
+cargo add tokio --features full
 ```
 
-## Reference
+---
 
-A full reference for this library is available [here](./reference.md).
+## Quickstart
 
-## Usage
+Get current weather readings for any public Weathercloud station using its device ID (e.g., `5726468552`):
 
-Instantiate and use the client with the following:
+```rust
+use weathercloud::prelude::*;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let client = WeathercloudClient::default();
+
+    // Query live sensor readings — no login or CSRF tokens required
+    let weather = client.device_live.get_values("5726468552", None).await?;
+
+    println!("Timestamp:   {:?}", weather.epoch);
+    println!("Temperature: {:?} °C", weather.temp);
+    println!("Humidity:    {:?} %", weather.hum);
+    println!("Pressure:    {:?} hPa", weather.bar);
+    println!("Wind Speed:  {:?} m/s (Gusts: {:?} m/s)", weather.wspd, weather.wspdhi);
+    println!("Wind Dir:    {:?}°", weather.wdir);
+    println!("Daily Rain:  {:?} mm", weather.rain);
+
+    Ok(())
+}
+```
+
+---
+
+## Live Weather Station Readings
+
+### All Sensor Values
+
+`client.device_live.get_values(...)` returns strongly-typed sensor readings:
+
+```rust
+use weathercloud::prelude::*;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let client = WeathercloudClient::default();
+    let values = client.device_live.get_values("5726468552", None).await?;
+
+    // Temperature & Humidity
+    println!("Temp: {:?}°C | Dew Point: {:?}°C | Heat: {:?}°C | Chill: {:?}°C", 
+        values.temp, values.dew, values.heat, values.chill);
+    println!("Humidity: {:?}%", values.hum);
+
+    // Wind
+    println!("Wind Speed: {:?} m/s (Avg: {:?} m/s, Max: {:?} m/s)", 
+        values.wspd, values.wspdavg, values.wspdhi);
+    println!("Direction:  {:?}° (Avg: {:?}°)", values.wdir, values.wdiravg);
+
+    // Barometer & Rain
+    println!("Barometer:  {:?} hPa", values.bar);
+    println!("Rain Today: {:?} mm (Rate: {:?} mm/h)", values.rain, values.rainrate);
+
+    // Solar & UV (if supported by station hardware)
+    if let Some(uvi) = values.uvi {
+        println!("UV Index: {}", uvi);
+    }
+    if let Some(solarrad) = values.solarrad {
+        println!("Solar Radiation: {} W/m²", solarrad);
+    }
+
+    Ok(())
+}
+```
+
+---
+
+## Sensor Variables Reference
+
+Weathercloud reports abbreviated keys across its API. The SDK exposes these as clean Rust struct fields:
+
+| Field | Type | Description | Unit / Format |
+|---|---|---|---|
+| `epoch` | `Option<i64>` | Timestamp of last sensor transmission | Unix epoch (seconds) |
+| `temp` | `Option<f64>` | Air temperature | °C |
+| `dew` | `Option<f64>` | Dew point | °C |
+| `chill` | `Option<f64>` | Wind chill | °C |
+| `heat` | `Option<f64>` | Heat index | °C |
+| `hum` | `Option<i64>` | Relative humidity | % (0–100) |
+| `bar` | `Option<f64>` | Atmospheric / barometric pressure | hPa |
+| `wdir` | `Option<i64>` | Instantaneous wind direction | Degrees (0–360°) |
+| `wdiravg` | `Option<i64>` | Average wind direction | Degrees (0–360°) |
+| `wspd` | `Option<f64>` | Instantaneous wind speed | m/s |
+| `wspdavg` | `Option<f64>` | Average wind speed | m/s |
+| `wspdhi` | `Option<f64>` | Peak wind gust of the day | m/s |
+| `rain` | `Option<f64>` | Accumulated daily precipitation | mm |
+| `rainrate` | `Option<f64>` | Current precipitation rate | mm/h |
+| `uvi` | `Option<f64>` | UV index | Index (0–16) |
+| `solarrad` | `Option<f64>` | Solar radiation | W/m² |
+
+---
+
+## Station Profile & Metadata
+
+Retrieve station model, manufacturer, coordinates, and observer details:
+
+```rust
+use weathercloud::prelude::*;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let client = WeathercloudClient::default();
+
+    // Station metadata
+    let info = client.device_live.get_info("5726468552", None).await?;
+    if let Some(dev) = info.device {
+        println!("Station Name: {:?}", dev.name);
+        println!("Model:        {:?}", dev.model);
+        println!("Coordinates:  {:?}, {:?}", dev.latitude, dev.longitude);
+    }
+
+    // Global network statistics
+    let stats = client.device_live.get_stats(None).await?;
+    println!("Active Devices:     {:?}", stats.devices_active);
+    println!("Total Measurements: {:?}", stats.measurements_total);
+
+    Ok(())
+}
+```
+
+---
+
+## Map & Station Discovery
+
+Discover active weather stations within a geographic area or near coordinates:
+
+```rust
+use weathercloud::prelude::*;
+use weathercloud::api::types::GetDevicesMapRequest;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let client = WeathercloudClient::default();
+
+    let devices = client.map.get_devices(&GetDevicesMapRequest {
+        min_lat: Some(40.7000),
+        max_lat: Some(40.8500),
+        min_lon: Some(-74.0500),
+        max_lon: Some(-73.9000),
+        ..Default::default()
+    }, None).await?;
+
+    for dev in devices {
+        println!("ID: {:?} | Name: {:?}", dev.id, dev.name);
+    }
+
+    Ok(())
+}
+```
+
+---
+
+## METAR Airport Observations
+
+Query aviation weather reports from global airport METAR stations:
+
+```rust
+use weathercloud::prelude::*;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let client = WeathercloudClient::default();
+
+    let metar = client.metar.get_values("EHAM", None).await?;
+    println!("Airport METAR: {:?}", metar);
+
+    Ok(())
+}
+```
+
+---
+
+## Error Handling
+
+All failed API requests return `weathercloud::ApiError`:
 
 ```rust
 use weathercloud::prelude::*;
 
 #[tokio::main]
 async fn main() {
-    let config = ClientConfig {
-        ..Default::default()
-    };
-    let client = WeathercloudClient::new(config).expect("Failed to build client");
-    client
-        .auth
-        .login(
-            &LoginAuthRequest {
-                login_form_entity: "LoginForm[entity]".to_string(),
-                login_form_password: "LoginForm[password]".to_string(),
-                login_form_remember_me: None,
-            },
-            None,
-        )
-        .await;
-}
-```
+    let client = WeathercloudClient::default();
 
-## Environments
-
-This SDK allows you to configure different environments for API requests.
-
-```rust
-use weathercloud::prelude::{*};
-
-let config = ClientConfig {
-    base_url: Environment::Default.url().to_string(),
-    ..Default::default()
-};
-let client = Client::new(config).expect("Failed to build client");
-```
-
-## Errors
-
-When the API returns a non-success status code (4xx or 5xx response), an error will be returned.
-
-```rust
-match client.auth.login(None)?.await {
-    Ok(response) => {
-        println!("Success: {:?}", response);
-    },
-    Err(ApiError::HTTP { status, message }) => {
-        println!("API Error {}: {:?}", status, message);
-    },
-    Err(e) => {
-        println!("Other error: {:?}", e);
+    match client.device_live.get_values("nonexistent-id", None).await {
+        Ok(weather) => println!("Temp: {:?}", weather.temp),
+        Err(err) => eprintln!("API Error: {:?}", err),
     }
 }
 ```
 
-## Request Types
+---
 
-The SDK exports all request types as Rust structs. Simply import them from the crate to access them:
+## Full Reference
 
-```rust
-use weathercloud::prelude::{*};
-
-let request = LoginAuthRequest {
-    ...
-};
-```
-
-## Advanced
-
-### Retries
-
-The SDK is instrumented with automatic retries with exponential backoff. A request will be retried as long
-as the request is deemed retryable and the number of retry attempts has not grown larger than the configured
-retry limit (default: 2).
-
-A request is deemed retryable when any of the following HTTP status codes is returned:
-
-- [408](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/408) (Timeout)
-- [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) (Too Many Requests)
-- [5XX](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) (Internal Server Error)
-
-The `retryStatusCodes` configuration controls which [5XX](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) status codes are retried:
-
-- `legacy` (default): Retries `408`, `429`, and all `>= 500`
-- `recommended`: Retries `408`, `429`, `502`, `503`, `504` only (excludes `500 Internal Server Error` to avoid retrying non-idempotent failures)
-
-Use the `max_retries` method to configure this behavior.
-
-```rust
-let response = client.auth.login(
-    Some(RequestOptions::new().max_retries(3))
-)?.await;
-```
-
-### Timeouts
-
-The SDK defaults to a 30 second timeout. Use the `timeout` method to configure this behavior.
-
-```rust
-let response = client.auth.login(
-    Some(RequestOptions::new().timeout_seconds(30))
-)?.await;
-```
-
-### Additional Headers
-
-You can add custom headers to requests using `RequestOptions`.
-
-```rust
-let response = client.auth.login(
-    Some(
-        RequestOptions::new()
-            .additional_header("X-Custom-Header", "custom-value")
-            .additional_header("X-Another-Header", "another-value")
-    )
-)?
-.await;
-```
-
-### Additional Query String Parameters
-
-You can add custom query parameters to requests using `RequestOptions`.
-
-```rust
-let response = client.auth.login(
-    Some(
-        RequestOptions::new()
-            .additional_query_param("filter", "active")
-            .additional_query_param("sort", "desc")
-    )
-)?
-.await;
-```
-
-### Additional Body Properties
-
-You can add properties to the request body using `RequestOptions`, e.g. to send fields the SDK
-doesn't model yet. Keys are sent as-is, and a property set here overrides a field of the same name.
-If the endpoint has no body, a JSON object containing only these properties is sent. Additional
-properties apply to JSON and form-urlencoded bodies; multipart (file upload) and raw bytes bodies
-are sent unchanged.
-
-```rust
-let response = client.auth.login(
-    Some(
-        RequestOptions::new()
-            .additional_body_param("beta_feature", true)
-            .additional_body_param("metadata", serde_json::json!({ "source": "sdk" }))
-    )
-)?
-.await;
-```
-
-### Custom Client
-
-The SDK builds its own `reqwest` client by default, but you can supply your own through
-`ClientConfig.reqwest_client` (or `ApiClientBuilder::reqwest_client`) when you need control over the
-transport — custom root certificates, client certificates, proxies or connection tuning. The supplied
-client is used as-is; authentication, custom headers and retries are still applied by the SDK.
-
-```rust
-use weathercloud::prelude::*;
-
-let certificate = reqwest::Certificate::from_pem(&std::fs::read("ca.pem")?)?;
-let reqwest_client = reqwest::Client::builder()
-    .add_root_certificate(certificate)
-    .build()
-    .expect("Failed to build reqwest client");
-let config = ClientConfig {
-    reqwest_client: Some(reqwest_client),
-    ..Default::default()
-};
-let client = WeathercloudClient::new(config).expect("Failed to build client");
-```
-
-## Contributing
-
-While we value open-source contributions to this SDK, this library is generated programmatically.
-Additions made directly to this library would have to be moved over to our generation code,
-otherwise they would be overwritten upon the next generated release. Feel free to open a PR as
-a proof of concept, but know that we will not be able to merge it as-is. We suggest opening
-an issue first to discuss with us!
-
-On the other hand, contributions to the README are always very welcome!
+For comprehensive API definitions, request parameters, and response schemas, see [reference.md](./reference.md).
